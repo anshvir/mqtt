@@ -50,8 +50,20 @@ void reconnect(){
 }
 
 void callback(char* topic, byte* payload, unsigned int length ){
+  char* state = "True";
   Serial.print("Recived messages; ");
   Serial.print(topic);
+  if (topic == state){
+
+    Serial.print("led on!");
+    digitalWrite(26, HIGH);
+
+  }
+  else {
+    Serial.print("led off ");
+    digitalWrite(26, LOW);
+    delay(1000);
+  }
   for(int i = 0; i < length; i++){
     Serial.print((char) payload[i]);
 
@@ -90,4 +102,6 @@ void loop() {
       count = 0;
     } 
   }
+
+ 
 }
