@@ -35,25 +35,23 @@ void setupWifi(){
 
 void reconnect(){
   while(!client.connected()){
-    Serial.print("\nConnecting to ");
-    Serial.println(broker);
     if(client.connect("Ansh")){
-      Serial.print("\nConnected to");
-      Serial.println(broker);
       client.subscribe(inTopic);
     }
     else{
-      Serial.println("\ntrying to connect again");
-      delay(5000);
+      delay(10);
     }
   }
 }
-
+char receivdPayload[10]; 
 void callback(char* topic, byte* payload, unsigned int length ){
-  char* state = "True";
-  Serial.print("Recived messages; ");
-  Serial.print(topic);
-  if (topic == state){
+  memset(receivdPayload,0, sizeof(receivdPayload));
+  //Serial.print("Recived messages; ");
+  for(int i = 0; i < length; i++){
+    receivdPayload[i] = payload[i];
+  }
+  //Serial.println(receivdPayload);
+  if (strcmp(receivdPayload , "True") == 0){
 
     Serial.print("led on!");
     digitalWrite(26, HIGH);
@@ -64,11 +62,8 @@ void callback(char* topic, byte* payload, unsigned int length ){
     digitalWrite(26, LOW);
     delay(1000);
   }
-  for(int i = 0; i < length; i++){
-    Serial.print((char) payload[i]);
+  
 
-  }
-  Serial.println();
 }
 
 void setup() {
@@ -90,18 +85,18 @@ void loop() {
   }
   client.loop();
 
-  currentTime = millis();
-  if(currentTime - lastTime > 2000){
-    count++;
-    sniprintf(messages, 50,"Count: %ld", count);
-    Serial.print("Sending messages: ");
-    Serial.print(messages);
-    client.publish(outTopic, messages);
-    lastTime = millis();
-    if(count > 50){
-      count = 0;
-    } 
-  }
+  // currentTime = millis();
+  // if(currentTime - lastTime > 2000){
+  //   count++;
+  //   sniprintf(messages, 50,"Count: %ld", count);
+  //   // Serial.print("Sending messages: ");
+  //   // Serial.print(messages);
+  //   client.publish(outTopic, messages);
+  //   lastTime = millis();
+  //   if(count > 50){
+  //     count = 0;
+  //   } 
+  // }
 
  
 }
